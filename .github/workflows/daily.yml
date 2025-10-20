@@ -25,6 +25,14 @@ jobs:
           npm ci
         fi
 
+    - name: Debug - list files
+      run: |
+        echo "Workspace content:"
+        ls -la
+        echo "src directory content:"
+        ls -la src/
+        echo "Current directory: $(pwd)"
+
     - name: Run daily script
       env:
         SECRET_1: ${{ secrets.NAME_1 }}
