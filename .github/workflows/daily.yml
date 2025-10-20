@@ -25,13 +25,21 @@ jobs:
           npm ci
         fi
 
-    - name: Debug - list files
+    - name: Debug - list files and check entry point
       run: |
-        echo "Workspace content:"
+        echo "===== Current workspace ====="
+        pwd
+        echo "===== Listing all files ====="
         ls -la
-        echo "src directory content:"
+        echo "===== src directory content ====="
         ls -la src/
-        echo "Current directory: $(pwd)"
+        echo "===== Checking if src/index.js exists ====="
+        if [ -f "src/index.js" ]; then
+          echo "✅ src/index.js exists"
+          echo "File path: $(pwd)/src/index.js"
+        else
+          echo "❌ src/index.js does not exist"
+        fi
 
     - name: Run daily script
       env:
