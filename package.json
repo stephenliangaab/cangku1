@@ -1,0 +1,37 @@
+{
+  "name": "digital-worker",
+  "version": "1.0.0",
+  "description": "数字员工夜间抓取系统 - 基于 Jina AI 和 Claude Code 的自动化 AI 动态抓取和报告生成系统",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "node src/test.js",
+    "setup": "npm install && mkdir -p logs data/cache data/reports config"
+  },
+  "keywords": [
+    "jina-ai",
+    "claude-code",
+    "web-scraping",
+    "automation",
+    "ai",
+    "news-aggregator"
+  ],
+  "author": "Digital Worker Team",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.0",
+    "node-cron": "^3.0.3",
+    "dotenv": "^16.3.1",
+    "winston": "^3.11.0",
+    "@slack/web-api": "^7.0.1",
+    "markdown-it": "^14.0.0",
+    "lowdb": "^7.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
