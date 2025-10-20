@@ -18,6 +18,7 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '18'
+        cache: 'npm'
 
     - name: Install dependencies
       run: |
@@ -25,20 +26,22 @@ jobs:
           npm ci
         fi
 
-    - name: Debug - list files and check entry point
+    - name: Debug - detailed file listing
       run: |
         echo "===== Current workspace ====="
         pwd
-        echo "===== Listing all files ====="
-        ls -la
-        echo "===== src directory content ====="
-        ls -la src/
-        echo "===== Checking if src/index.js exists ====="
+        echo "===== Detailed file structure ====="
+        find . -maxdepth 3 -type f | sort
+        echo "===== Checking src/index.js specifically ====="
         if [ -f "src/index.js" ]; then
-          echo "✅ src/index.js exists"
-          echo "File path: $(pwd)/src/index.js"
+          echo "✅ src/index.js exists at $(pwd)/src/index.js"
+          echo "File size: $(wc -l < src/index.js) lines"
+          echo "First 5 lines:"
+          head -5 src/index.js
         else
           echo "❌ src/index.js does not exist"
+          echo "Available files in src/:"
+          ls -la src/ || echo "src/ directory doesn't exist"
         fi
 
     - name: Run daily script
