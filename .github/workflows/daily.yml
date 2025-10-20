@@ -1,0 +1,33 @@
+name: Daily Automation
+
+on:
+  schedule:
+    # 每天北京时间 09:00 运行 (UTC+8 = 01:00 UTC)
+    - cron: '0 1 * * *'
+  workflow_dispatch:
+
+jobs:
+  daily-task:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    - name: Install dependencies
+      run: |
+        if [ -f "package.json" ]; then
+          npm ci
+        fi
+
+    - name: Run daily script
+      env:
+        SECRET_1: ${{ secrets.NAME_1 }}
+        SECRET_2: ${{ secrets.NAME_2 }}
+      run: |
+        node src/index.js
