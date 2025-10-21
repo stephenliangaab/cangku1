@@ -12,7 +12,7 @@ const Helpers = require('../utils/helpers');
 class ClaudeClient {
   constructor() {
     // 使用 Deepseek API 配置
-    this.apiKey = configManager.get('DEEPSEEK_API_KEY', 'sk-6aebd68327c6462c9cfceb13f68551d2');
+    this.apiKey = configManager.get('DEEPSEEK_API_KEY'); // 只允许通过环境变量获取密钥，安全合规
     this.model = configManager.get('DEEPSEEK_MODEL', 'deepseek-chat');
     this.baseURL = 'https://api.deepseek.com/v1';
     this.timeout = configManager.getSystemConfig().requestTimeout;
