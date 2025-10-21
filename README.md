@@ -9,7 +9,7 @@
 - 📄 **内容净化**：自动去除广告和样式噪声，保留核心内容
 - 🧠 **智能摘要**：使用 Deepseek AI 进行内容摘要和分类
 - 📊 **报告生成**：生成结构化的 Markdown 报告
-- 📧 **多渠道推送**：支持邮件和 Slack 通知
+- 📧 **多渠道推送**：支持邮件和飞书通知
 
 ## 系统架构
 
@@ -65,7 +65,7 @@ npm run test
 - `JINA_API_KEY` - Jina AI API 密钥
 - `DEEPSEEK_API_KEY` - Deepseek AI API 密钥
 - `EMAIL_CONFIG` - 邮件推送配置
-- `SLACK_WEBHOOK_URL` - Slack Webhook URL
+- `FEISHU_WEBHOOK_URL` - 飞书 Webhook URL
 
 ### 关键词配置
 在 `config/keywords.json` 中配置搜索关键词：

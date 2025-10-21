@@ -92,9 +92,9 @@ class ConfigManager {
    * 验证必需配置
    */
   validateRequiredConfig() {
-    const required = ['JINA_API_KEY', 'CLAUDE_API_KEY'];
+    // 只校验项目真正用到的环境变量
+    const required = ['JINA_API_KEY', 'DEEPSEEK_API_KEY'];
     const missing = required.filter(key => !process.env[key]);
-    
     if (missing.length > 0) {
       throw new Error(`缺少必需的环境变量: ${missing.join(', ')}`);
     }
