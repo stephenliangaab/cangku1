@@ -1,9 +1,8 @@
 /**
  * 通知推送模块
- * 负责将报告推送到飞书、Slack 等渠道
+ * 负责将报告推送到飞书渠道
  */
 
-const { WebClient } = require('@slack/web-api');
 const logger = require('../utils/logger');
 const configManager = require('../utils/config');
 const Helpers = require('../utils/helpers');
@@ -11,11 +10,8 @@ const Helpers = require('../utils/helpers');
 class Notifier {
   constructor() {
     this.feishuConfig = this.getFeishuConfig();
-    this.slackConfig = this.getSlackConfig();
-    this.slackClient = null;
     
     this.initFeishu();
-    this.initSlack();
   }
 
   /**
@@ -28,17 +24,6 @@ class Notifier {
   }
 
   /**
-   * 获取 Slack 配置
-   */
-  getSlackConfig() {
-    return {
-      webhookUrl: configManager.get('SLACK_WEBHOOK_URL'),
-      channel: configManager.get('SLACK_CHANNEL', '#ai-news'),
-      token: configManager.get('SLACK_BOT_TOKEN')
-    };
-  }
-
-  /**
    * 初始化飞书客户端
    */
   initFeishu() {
@@ -46,24 +31,6 @@ class Notifier {
       logger.info('飞书 Webhook 配置完成');
     } else {
       logger.warn('飞书配置不完整，飞书通知功能将不可用');
-    }
-  }
-
-  /**
-   * 初始化 Slack 客户端
-   */
-  initSlack() {
-    if (this.slackConfig.token) {
-      try {
-        this.slackClient = new WebClient(this.slackConfig.token);
-        logger.info('Slack 客户端初始化完成');
-      } catch (error) {
-        logger.error('Slack 客户端初始化失败', error);
-      }
-    } else if (this.slackConfig.webhookUrl) {
-      logger.info('Slack Webhook 配置完成');
-    } else {
-      logger.warn('Slack 配置不完整，Slack 通知功能将不可用');
     }
   }
 
@@ -104,172 +71,163 @@ class Notifier {
    * @returns {string} 飞书消息内容
    */
   formatFeishuContent(report) {
-    // 直接返回完整的报告内容
-    let content = `${report.title}\n\n`;
-    content += `📅 生成时间: ${report.timestamp}\n`;
-    content += `📊 文章数量: ${report.totalArticles} 篇\n\n`;
-    content += `---\n\n`;
-    content += `${report.content}\n\n`;
-    content += `---\n\n`;
+    // 使用新的结构化格式
+    const timestamp = report.timestamp || Helpers.formatTimestamp();
+    const timeStr = this.extractTime(timestamp); // 提取时间部分 HH:mm
+    const totalNews = report.totalArticles || 0;
     
-    if (report.categories) {
-      const categoryStats = Object.entries(report.categories)
-        .map(([category, count]) => `• ${category}: ${count} 篇`)
-        .join('\n');
-      content += `📈 分类统计:\n${categoryStats}\n\n`;
+    let content = `总新闻数: ${totalNews}\n`;
+    content += `时间: ${timestamp}\n`;
+    content += `类型: 热点词汇统计\n\n`;
+    
+    // 如果有文章列表，按分类组织
+    if (report.articles && report.articles.length > 0) {
+      // 按关键词分类（简化版：使用第一个关键词作为分类）
+      const categories = this.groupArticlesByCategory(report.articles, report.keywords);
+      
+      // 显示分类统计
+      const categoryEntries = Object.entries(categories);
+      categoryEntries.forEach(([category, articles], index) => {
+        const categoryNum = index + 1;
+        const totalCategories = categoryEntries.length;
+        content += `📊 [${categoryNum}/${totalCategories}] ${category}: ${articles.length}条\n`;
+      });
+      
+      content += `\n`;
+      
+      // 显示新闻列表
+      let articleIndex = 1;
+      categoryEntries.forEach(([category, articles]) => {
+        articles.forEach(article => {
+          const source = this.extractSource(article.url);
+          const title = article.title || '无标题';
+          // 引用数使用 keyPoints 数量，如果没有则使用默认值
+          const refCount = article.keyPoints && article.keyPoints.length > 0 
+            ? article.keyPoints.length 
+            : (article.links ? article.links.length : 0);
+          // 优先使用文章发布时间，否则使用报告生成时间
+          const articleTime = article.published 
+            ? this.extractTime(article.published) 
+            : timeStr;
+          
+          content += `${articleIndex}. [${source}] ${title}[${refCount}] - ${articleTime}\n`;
+          articleIndex++;
+        });
+      });
+    } else {
+      // 如果没有文章列表，使用原来的格式
+      content += `${report.content}\n`;
     }
-    
-    content += `💡 完整报告已保存到本地文件`;
     
     return content;
   }
 
   /**
-   * 发送 Slack 通知
-   * @param {Object} report 报告对象
-   * @returns {Promise<boolean>} 是否发送成功
+   * 从时间戳中提取时间部分 (HH:mm)
+   * @param {string} timestamp 时间戳字符串
+   * @returns {string} 时间字符串
    */
-  async sendSlack(report) {
-    // 优先使用 Webhook
-    if (this.slackConfig.webhookUrl) {
-      return await this.sendSlackWebhook(report);
-    }
+  extractTime(timestamp) {
+    if (!timestamp) return '00:00';
     
-    // 其次使用 Bot Token
-    if (this.slackClient) {
-      return await this.sendSlackMessage(report);
-    }
-    
-    logger.warn('Slack 配置不完整，跳过 Slack 发送');
-    return false;
-  }
-
-  /**
-   * 使用 Webhook 发送 Slack 消息
-   * @param {Object} report 报告对象
-   * @returns {Promise<boolean>} 是否发送成功
-   */
-  async sendSlackWebhook(report) {
     try {
-      const axios = require('axios');
-      
-      const message = {
-        channel: this.slackConfig.channel,
-        username: 'AI 动态夜报机器人',
-        icon_emoji: ':robot_face:',
-        blocks: this.formatSlackBlocks(report)
-      };
-
-      await axios.post(this.slackConfig.webhookUrl, message);
-      logger.info('Slack Webhook 消息发送成功');
-      return true;
-      
-    } catch (error) {
-      logger.error('Slack Webhook 消息发送失败', error);
-      return false;
-    }
-  }
-
-  /**
-   * 使用 Bot Token 发送 Slack 消息
-   * @param {Object} report 报告对象
-   * @returns {Promise<boolean>} 是否发送成功
-   */
-  async sendSlackMessage(report) {
-    try {
-      const result = await this.slackClient.chat.postMessage({
-        channel: this.slackConfig.channel,
-        text: report.title,
-        blocks: this.formatSlackBlocks(report),
-        username: 'AI 动态夜报机器人',
-        icon_emoji: ':robot_face:'
-      });
-
-      logger.info(`Slack 消息发送成功: ${result.ts}`);
-      return true;
-      
-    } catch (error) {
-      logger.error('Slack 消息发送失败', error);
-      return false;
-    }
-  }
-
-  /**
-   * 格式化 Slack Blocks
-   * @param {Object} report 报告对象
-   * @returns {Array} Slack Blocks 数组
-   */
-  formatSlackBlocks(report) {
-    const blocks = [
-      {
-        type: 'header',
-        text: {
-          type: 'plain_text',
-          text: report.title
-        }
-      },
-      {
-        type: 'section',
-        fields: [
-          {
-            type: 'mrkdwn',
-            text: `*生成时间:*\n${report.timestamp}`
-          },
-          {
-            type: 'mrkdwn',
-            text: `*文章数量:*\n${report.totalArticles} 篇`
-          }
-        ]
-      },
-      {
-        type: 'divider'
+      // 尝试解析各种时间格式
+      const date = new Date(timestamp);
+      if (!isNaN(date.getTime())) {
+        // 格式化为 HH:mm
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        return `${hours}:${minutes}`;
       }
-    ];
-
-    // 添加摘要（截断以避免过长）
-    const summary = Helpers.truncate(report.content.split('\n\n')[1] || '暂无摘要', 500);
-    if (summary) {
-      blocks.push({
-        type: 'section',
-        text: {
-          type: 'mrkdwn',
-          text: `*核心要点:*\n${summary}`
-        }
-      });
-    }
-
-    // 添加分类统计
-    if (report.categories) {
-      const categoryStats = Object.entries(report.categories)
-        .map(([category, count]) => `• ${category}: ${count} 篇`)
-        .join('\n');
       
-      blocks.push({
-        type: 'section',
-        text: {
-          type: 'mrkdwn',
-          text: `*分类统计:*\n${categoryStats}`
+      // 如果不是标准格式，尝试从字符串中提取
+      const match = timestamp.match(/(\d{1,2}):(\d{2})/);
+      if (match) {
+        return match[0];
+      }
+      
+      // 尝试从 "2026/01/15 17:38:24" 格式中提取
+      const parts = timestamp.split(' ');
+      if (parts.length >= 2) {
+        const timePart = parts[1];
+        if (timePart && timePart.includes(':')) {
+          return timePart.substring(0, 5); // 取前5个字符 "HH:mm"
         }
-      });
+      }
+      
+      return '00:00';
+    } catch {
+      return '00:00';
     }
+  }
 
-    // 添加查看完整报告的按钮
-    blocks.push({
-      type: 'actions',
-      elements: [
-        {
-          type: 'button',
-          text: {
-            type: 'plain_text',
-            text: '查看完整报告'
-          },
-          style: 'primary',
-          value: 'view_full_report'
-        }
-      ]
-    });
+  /**
+   * 从URL提取来源域名
+   * @param {string} url URL字符串
+   * @returns {string} 来源名称
+   */
+  extractSource(url) {
+    if (!url) return '未知来源';
+    
+    try {
+      const domain = Helpers.getDomain(url);
+      // 移除 www. 前缀
+      let source = domain.replace(/^www\./, '');
+      
+      // 常见来源映射表（中文名称）
+      const sourceMap = {
+        'tieba.baidu.com': '贴吧',
+        'cls.cn': '财联社热门',
+        'wallstreetcn.com': '华尔街见闻',
+        'thepaper.cn': '澎湃新闻',
+        '36kr.com': '36氪',
+        'techcrunch.com': 'TechCrunch',
+        'reuters.com': '路透社',
+        'bloomberg.com': '彭博',
+        'ft.com': '金融时报',
+        'wsj.com': '华尔街日报'
+      };
+      
+      // 检查是否有映射
+      if (sourceMap[source]) {
+        return sourceMap[source];
+      }
+      
+      // 提取主域名（去掉子域名和顶级域名）
+      const parts = source.split('.');
+      if (parts.length >= 2) {
+        // 返回主域名部分
+        const mainDomain = parts[parts.length - 2];
+        // 首字母大写
+        return mainDomain.charAt(0).toUpperCase() + mainDomain.slice(1);
+      }
+      return source;
+    } catch {
+      return '未知来源';
+    }
+  }
 
-    return blocks;
+  /**
+   * 按分类组织文章
+   * @param {Array} articles 文章数组
+   * @param {string} keywords 关键词字符串
+   * @returns {Object} 按分类组织的文章对象
+   */
+  groupArticlesByCategory(articles, keywords) {
+    // 如果没有关键词，使用默认分类
+    if (!keywords || keywords.trim() === '') {
+      return {
+        'AI 动态': articles
+      };
+    }
+    
+    // 简化版：使用第一个关键词作为分类名
+    const keywordList = keywords.split(',').map(k => k.trim()).filter(k => k);
+    const categoryName = keywordList[0] || 'AI 动态';
+    
+    return {
+      [categoryName]: articles
+    };
   }
 
   /**
@@ -280,30 +238,24 @@ class Notifier {
   async sendAllNotifications(report) {
     const results = {
       feishu: false,
-      slack: false,
       timestamp: new Date().toISOString()
     };
 
     try {
       logger.info('开始发送通知');
       
-      // 并行发送飞书和 Slack 通知
-      const [feishuResult, slackResult] = await Promise.allSettled([
-        this.sendFeishu(report),
-        this.sendSlack(report)
+      // 发送飞书通知
+      const feishuResult = await Promise.allSettled([
+        this.sendFeishu(report)
       ]);
 
-      results.feishu = feishuResult.status === 'fulfilled' ? feishuResult.value : false;
-      results.slack = slackResult.status === 'fulfilled' ? slackResult.value : false;
+      results.feishu = feishuResult[0].status === 'fulfilled' ? feishuResult[0].value : false;
 
-      if (feishuResult.status === 'rejected') {
-        logger.error('飞书发送失败', feishuResult.reason);
-      }
-      if (slackResult.status === 'rejected') {
-        logger.error('Slack 发送失败', slackResult.reason);
+      if (feishuResult[0].status === 'rejected') {
+        logger.error('飞书发送失败', feishuResult[0].reason);
       }
 
-      const successCount = [results.feishu, results.slack].filter(Boolean).length;
+      const successCount = results.feishu ? 1 : 0;
       logger.info(`通知发送完成: ${successCount} 个渠道成功`);
       
       return results;
@@ -338,7 +290,6 @@ class Notifier {
   async healthCheck() {
     const results = {
       feishu: false,
-      slack: false,
       timestamp: new Date().toISOString()
     };
 
@@ -346,14 +297,6 @@ class Notifier {
       // 检查飞书配置
       if (this.feishuConfig.webhookUrl) {
         results.feishu = true; // Webhook 配置存在即认为健康
-      }
-
-      // 检查 Slack 配置
-      if (this.slackClient) {
-        await this.slackClient.auth.test();
-        results.slack = true;
-      } else if (this.slackConfig.webhookUrl) {
-        results.slack = true; // Webhook 配置存在即认为健康
       }
 
       return results;

@@ -221,7 +221,9 @@ class ContentProcessor {
         title: title,
         content: reportContent,
         timestamp: timestamp,
-        totalArticles: processedResult.totalArticles
+        totalArticles: processedResult.totalArticles,
+        articles: processedResult.articles || [], // 添加文章列表供飞书消息使用
+        keywords: keywords
       };
       
       // 保存报告到文件

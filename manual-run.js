@@ -31,13 +31,12 @@ async function manualRun() {
     const result = await processor.runNightlyProcess();
     
     console.log('\n3. 发送飞书通知...');
-    let notificationResult = { feishu: false, slack: false };
+    let notificationResult = { feishu: false };
     
     if (result.success && result.report) {
       // 发送飞书通知
       notificationResult = await notifier.sendAllNotifications(result.report);
       console.log(`   ✅ 飞书通知发送: ${notificationResult.feishu ? '成功' : '失败'}`);
-      console.log(`   - Slack 通知: ${notificationResult.slack ? '成功' : '失败'}`);
     } else {
       console.log('   ❌ 无法发送通知，因为任务执行失败或没有报告');
     }

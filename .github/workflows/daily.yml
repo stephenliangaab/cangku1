@@ -1,54 +1,140 @@
-name: Daily Automation
+name: 数字员工夜间抓取系统
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 📝 定时抓取配置（中国时间 / Beijing Time）
+# 📝 Scheduled crawl configuration (China Time / Beijing Time)
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+#
+# 当前设置 / Current settings:
+#   - 09:00 北京时间 / 09:00 Beijing = 01:00 UTC（每日早上抓取）
+#
+# 💡 说明 / Notes:
+#   - 系统会在每天早上自动抓取 AI 动态并生成智能报告
+#   - 支持手动触发（点击 "Run workflow" 按钮）
+#   - The system automatically crawls AI news and generates reports every morning
+#   - Manual trigger supported (click "Run workflow" button)
 
 on:
   schedule:
-    # 每天北京时间 09:00 运行 (UTC+8 = 01:00 UTC)
-    - cron: '0 1 * * *'
+    - cron: '0 1 * * *'  # 北京时间 09:00 / Beijing 09:00
   workflow_dispatch:
 
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 🔄 并发控制 / Concurrency Control
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 确保同一时间只有一个任务在运行，避免重复执行
+# Ensures only one task runs at a time to avoid duplicate execution
+concurrency:
+  group: digital-worker-${{ github.ref_name }}
+  cancel-in-progress: true
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 🔐 权限设置 / Permissions
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+permissions:
+  contents: read
+  actions: read
+
 jobs:
-  daily-task:
+  crawl:
     runs-on: ubuntu-latest
-    
+    # 设置超时时间为 30 分钟，防止任务无限运行
+    # Set timeout to 30 minutes to prevent infinite execution
+    timeout-minutes: 30
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      # 📥 代码检出 / Checkout Code
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          clean: true
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-        cache: 'npm'
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      # 🚦 流量控制 / Traffic Control
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      # EN: Generates a random delay between 1 and 300 seconds (5 minutes).
+      #     Critical for load balancing and avoiding API rate limits.
+      #
+      # CN: 生成 1 到 300 秒（5分钟）之间的随机延迟。
+      #     这对负载均衡和避免 API 限流至关重要。
+      - name: Random Delay (Traffic Control)
+        run: |
+          echo "🎲 流量控制：生成随机延迟..."
+          echo "🎲 Traffic Control: Generating random delay..."
+          DELAY=$(( ( RANDOM % 300 )  + 1 ))
+          echo "⏸️  延迟 ${DELAY} 秒以分散负载..."
+          echo "⏸️  Sleeping for ${DELAY} seconds to spread the load..."
+          sleep ${DELAY}s
+          echo "▶️  延迟完成，开始执行任务..."
+          echo "▶️  Delay finished. Starting task..."
 
-    - name: Install dependencies
-      run: |
-        if [ -f "package.json" ]; then
-          npm ci
-        fi
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      # 📦 Node.js 环境设置 / Setup Node.js
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
 
-    - name: Debug - detailed file listing
-      run: |
-        echo "===== Current workspace ====="
-        pwd
-        echo "===== Detailed file structure ====="
-        find . -maxdepth 3 -type f | sort
-        echo "===== Checking src/index.js specifically ====="
-        if [ -f "src/index.js" ]; then
-          echo "✅ src/index.js exists at $(pwd)/src/index.js"
-          echo "File size: $(wc -l < src/index.js) lines"
-          echo "First 5 lines:"
-          head -5 src/index.js
-        else
-          echo "❌ src/index.js does not exist"
-          echo "Available files in src/:"
-          ls -la src/ || echo "src/ directory doesn't exist"
-        fi
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      # 📚 安装依赖 / Install Dependencies
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      - name: Install dependencies
+        run: |
+          echo "📦 正在安装依赖..."
+          echo "📦 Installing dependencies..."
+          if [ -f "package.json" ]; then
+            npm ci
+            echo "✅ 依赖安装完成"
+            echo "✅ Dependencies installed successfully"
+          else
+            echo "❌ 未找到 package.json 文件"
+            echo "❌ package.json not found"
+            exit 1
+          fi
 
-    - name: Run daily script
-      env:
-        JINA_API_KEY: ${{ secrets.JINA_API_KEY }}
-        DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
-        FEISHU_WEBHOOK_URL: ${{ secrets.FEISHU_WEBHOOK_URL }}
-        DEEPSEEK_MODEL: ${{ secrets.DEEPSEEK_MODEL }}
-      run: |
-        node src/index.js
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      # ✅ 验证必要文件 / Verify Required Files
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      - name: Verify required files
+        run: |
+          echo "🔍 验证必要文件..."
+          echo "🔍 Verifying required files..."
+          if [ ! -f "src/index.js" ]; then
+            echo "❌ 错误：未找到 src/index.js"
+            echo "❌ Error: src/index.js not found"
+            exit 1
+          fi
+          if [ ! -f "config/keywords.json" ]; then
+            echo "⚠️  警告：未找到 config/keywords.json"
+            echo "⚠️  Warning: config/keywords.json not found"
+          fi
+          echo "✅ 文件验证完成"
+          echo "✅ File verification completed"
+
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      # 🚀 执行抓取任务 / Run Crawler
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      - name: Run digital worker
+        env:
+          # Jina AI 配置
+          JINA_API_KEY: ${{ secrets.JINA_API_KEY }}
+          # Deepseek AI 配置
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          DEEPSEEK_MODEL: ${{ secrets.DEEPSEEK_MODEL }}
+          # 飞书通知配置
+          FEISHU_WEBHOOK_URL: ${{ secrets.FEISHU_WEBHOOK_URL }}
+          # GitHub Actions 环境标识
+          GITHUB_ACTIONS: true
+        run: |
+          echo "🚀 开始执行数字员工抓取任务..."
+          echo "🚀 Starting digital worker crawl task..."
+          echo "📅 执行时间: $(date '+%Y-%m-%d %H:%M:%S %Z')"
+          echo "📅 Execution time: $(date '+%Y-%m-%d %H:%M:%S %Z')"
+          node src/index.js
+          echo "✅ 任务执行完成"
+          echo "✅ Task completed successfully"

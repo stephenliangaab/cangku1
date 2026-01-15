@@ -50,10 +50,6 @@ DEEPSEEK_MODEL=deepseek-chat
 # 飞书推送配置
 FEISHU_WEBHOOK_URL=https://open.feishu.cn/open-apis/bot/v2/hook/cf30d1da-50a8-4396-adc3-e02cf893ce78
 
-# Slack 推送配置（可选）
-SLACK_WEBHOOK_URL=https://hooks.slack.com/services/your/webhook/url
-SLACK_CHANNEL=#ai-news
-
 # 系统配置
 CRON_SCHEDULE=0 23 * * *  # 每晚 23:00 执行
 MAX_RESULTS=10            # 最大搜索结果数
@@ -150,7 +146,7 @@ node src/index.js manual
 3. **内容抓取** - 获取并净化网页内容
 4. **智能处理** - 使用 Deepseek AI 进行摘要和分类
 5. **报告生成** - 生成结构化的 Markdown 报告
-6. **通知推送** - 通过飞书/Slack 发送报告
+6. **通知推送** - 通过飞书发送报告
 
 ### 报告格式
 

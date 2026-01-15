@@ -59,7 +59,6 @@ async function debugHealthCheck() {
       const notifierHealth = await notifier.healthCheck();
       console.log(`✅ 通知系统健康检查结果:`);
       console.log(`   飞书状态: ${notifierHealth.feishu}`);
-      console.log(`   Slack状态: ${notifierHealth.slack}`);
       console.log(`   时间戳: ${notifierHealth.timestamp}`);
     } catch (error) {
       console.log(`❌ 通知系统健康检查失败: ${error.message}`);
@@ -75,7 +74,7 @@ async function debugHealthCheck() {
       console.log(`   整体状态: ${schedulerHealth.healthy}`);
       console.log(`   调度器状态: ${JSON.stringify(schedulerHealth.scheduler)}`);
       console.log(`   处理器状态: ${schedulerHealth.processor.healthy}`);
-      console.log(`   通知器状态: 飞书=${schedulerHealth.notifier.feishu}, Slack=${schedulerHealth.notifier.slack}`);
+      console.log(`   通知器状态: 飞书=${schedulerHealth.notifier.feishu}`);
       console.log(`   时间戳: ${schedulerHealth.timestamp}`);
     } catch (error) {
       console.log(`❌ 调度器健康检查失败: ${error.message}`);
@@ -84,7 +83,7 @@ async function debugHealthCheck() {
     console.log('\n6. 分析健康检查逻辑...');
     console.log('调度器健康检查要求:');
     console.log('   - 处理器健康检查必须通过');
-    console.log('   - 至少一个通知渠道可用 (飞书或Slack)');
+    console.log('   - 飞书通知渠道必须可用');
     console.log('如果通知系统没有可用的渠道，整体健康检查会失败');
     
   } catch (error) {

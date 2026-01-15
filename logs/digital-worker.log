@@ -2209,3 +2209,174 @@ AxiosError: Request failed with status code 404
 2025-10-06 07:01:46 [INFO] 夜间任务完成，耗时 105.47 秒
 2025-10-06 07:01:46 [INFO] 处理结果: 6 篇文章
 2025-10-06 07:01:46 [INFO] 通知结果: 邮件 失败, Slack 失败
+2026-01-15 17:34:08 [INFO] 日志模块测试通过
+2026-01-15 17:34:13 [INFO] 环境变量配置加载完成
+2026-01-15 17:34:13 [INFO] 已加载 1 个搜索关键词
+2026-01-15 17:34:13 [INFO] 模板配置加载完成
+2026-01-15 17:34:13 [INFO] 配置管理器初始化完成
+2026-01-15 17:34:36 [INFO] 环境变量配置加载完成
+2026-01-15 17:34:36 [INFO] 已加载 1 个搜索关键词
+2026-01-15 17:34:36 [INFO] 模板配置加载完成
+2026-01-15 17:34:36 [INFO] 配置管理器初始化完成
+2026-01-15 17:35:30 [INFO] 发送消息给 Deepseek... (尝试 1/3)
+2026-01-15 17:35:31 [WARN] Deepseek API 调用失败 (尝试 1/3)
+2026-01-15 17:35:31 [INFO] 等待 2000ms 后重试...
+2026-01-15 17:35:33 [INFO] 发送消息给 Deepseek... (尝试 2/3)
+2026-01-15 17:35:33 [WARN] Deepseek API 调用失败 (尝试 2/3)
+2026-01-15 17:35:33 [INFO] 等待 4000ms 后重试...
+2026-01-15 17:35:37 [INFO] 发送消息给 Deepseek... (尝试 3/3)
+2026-01-15 17:35:37 [WARN] Deepseek API 调用失败 (尝试 3/3)
+2026-01-15 17:35:37 [ERROR] Deepseek API 调用失败，所有重试都已用尽
+2026-01-15 17:35:37 [ERROR] Deepseek API 健康检查失败
+2026-01-15 17:35:42 [INFO] 环境变量配置加载完成
+2026-01-15 17:35:42 [INFO] 已加载 1 个搜索关键词
+2026-01-15 17:35:42 [INFO] 模板配置加载完成
+2026-01-15 17:35:42 [INFO] 配置管理器初始化完成
+2026-01-15 17:35:42 [INFO] 飞书 Webhook 配置完成
+2026-01-15 17:35:42 [INFO] Slack Webhook 配置完成
+2026-01-15 17:35:42 [INFO] 飞书 Webhook 消息发送成功
+2026-01-15 17:36:22 [INFO] 飞书 Webhook 配置完成
+2026-01-15 17:36:22 [WARN] Slack 配置不完整，Slack 通知功能将不可用
+2026-01-15 17:36:22 [INFO] 🚀 启动数字员工夜间抓取系统
+2026-01-15 17:36:22 [INFO] 环境变量配置加载完成
+2026-01-15 17:36:22 [INFO] 已加载 1 个搜索关键词
+2026-01-15 17:36:22 [INFO] 模板配置加载完成
+2026-01-15 17:36:22 [INFO] 配置管理器初始化完成
+2026-01-15 17:36:22 [INFO] 配置加载完成
+2026-01-15 17:36:22 [INFO] 初始化调度器
+2026-01-15 17:36:22 [INFO] 发送消息给 Deepseek... (尝试 1/3)
+2026-01-15 17:36:22 [WARN] Deepseek API 调用失败 (尝试 1/3)
+2026-01-15 17:36:22 [INFO] 等待 2000ms 后重试...
+2026-01-15 17:36:24 [INFO] 发送消息给 Deepseek... (尝试 2/3)
+2026-01-15 17:36:24 [WARN] Deepseek API 调用失败 (尝试 2/3)
+2026-01-15 17:36:24 [INFO] 等待 4000ms 后重试...
+2026-01-15 17:36:25 [INFO] Jina AI 服务健康检查通过
+2026-01-15 17:36:28 [INFO] 发送消息给 Deepseek... (尝试 3/3)
+2026-01-15 17:36:28 [WARN] Deepseek API 调用失败 (尝试 3/3)
+2026-01-15 17:36:28 [ERROR] Deepseek API 调用失败，所有重试都已用尽
+2026-01-15 17:36:28 [ERROR] Deepseek API 健康检查失败
+2026-01-15 17:36:28 [INFO] 健康检查完成: 异常
+2026-01-15 17:36:28 [WARN] 系统健康检查未通过，但将继续初始化
+2026-01-15 17:36:28 [INFO] 定时任务已设置: 0 7 * * * (北京时间)
+2026-01-15 17:36:28 [INFO] 调度器初始化完成，定时任务设置为: 0 7 * * *
+2026-01-15 17:36:28 [INFO] 调度器初始化完成
+2026-01-15 17:36:28 [INFO] ✅ 数字员工系统启动完成
+2026-01-15 17:36:28 [INFO] 📅 定时任务: 0 7 * * * (北京时间)
+2026-01-15 17:36:28 [INFO] 💡 使用 Ctrl+C 停止系统
+2026-01-15 17:36:28 [INFO] 发送消息给 Deepseek... (尝试 1/3)
+2026-01-15 17:36:28 [WARN] Deepseek API 调用失败 (尝试 1/3)
+2026-01-15 17:36:28 [INFO] 等待 2000ms 后重试...
+2026-01-15 17:36:30 [INFO] 发送消息给 Deepseek... (尝试 2/3)
+2026-01-15 17:36:30 [WARN] Deepseek API 调用失败 (尝试 2/3)
+2026-01-15 17:36:30 [INFO] 等待 4000ms 后重试...
+2026-01-15 17:36:31 [INFO] Jina AI 服务健康检查通过
+2026-01-15 17:36:34 [INFO] 发送消息给 Deepseek... (尝试 3/3)
+2026-01-15 17:36:34 [WARN] Deepseek API 调用失败 (尝试 3/3)
+2026-01-15 17:36:34 [ERROR] Deepseek API 调用失败，所有重试都已用尽
+2026-01-15 17:36:34 [ERROR] Deepseek API 健康检查失败
+2026-01-15 17:36:34 [INFO] 健康检查完成: 异常
+2026-01-15 17:36:34 [WARN] ⚠️  系统健康检查发现异常，请检查配置
+2026-01-15 17:36:34 [INFO] 发送消息给 Deepseek... (尝试 1/3)
+2026-01-15 17:36:34 [WARN] Deepseek API 调用失败 (尝试 1/3)
+2026-01-15 17:36:34 [INFO] 等待 2000ms 后重试...
+2026-01-15 17:36:36 [INFO] 发送消息给 Deepseek... (尝试 2/3)
+2026-01-15 17:36:37 [WARN] Deepseek API 调用失败 (尝试 2/3)
+2026-01-15 17:36:37 [INFO] 等待 4000ms 后重试...
+2026-01-15 17:36:38 [INFO] Jina AI 服务健康检查通过
+2026-01-15 17:36:41 [INFO] 发送消息给 Deepseek... (尝试 3/3)
+2026-01-15 17:36:41 [WARN] Deepseek API 调用失败 (尝试 3/3)
+2026-01-15 17:36:51 [INFO] 环境变量配置加载完成
+2026-01-15 17:36:51 [INFO] 已加载 1 个搜索关键词
+2026-01-15 17:36:51 [INFO] 模板配置加载完成
+2026-01-15 17:36:51 [INFO] 配置管理器初始化完成
+2026-01-15 17:36:51 [INFO] 飞书 Webhook 配置完成
+2026-01-15 17:36:51 [INFO] Slack Webhook 配置完成
+2026-01-15 17:36:51 [INFO] 开始夜间抓取流程
+2026-01-15 17:36:51 [INFO] 使用 1 个关键词搜索内容
+2026-01-15 17:36:51 [INFO] 开始批量搜索 1 个关键词
+2026-01-15 17:36:51 [INFO] 开始搜索: "AI product"
+2026-01-15 17:36:58 [INFO] 搜索完成，找到 10 个结果
+2026-01-15 17:36:58 [INFO] 关键词 "AI product" 搜索完成，找到 10 个结果
+2026-01-15 17:36:58 [INFO] 批量搜索完成，共找到 10 个唯一结果
+2026-01-15 17:36:58 [INFO] 搜索完成，获得 10 个结果
+2026-01-15 17:36:58 [INFO] 开始抓取 10 个网页的内容
+2026-01-15 17:36:58 [INFO] 开始批量读取 10 个网页
+2026-01-15 17:36:59 [INFO] 开始读取网页: https://enterprisersproject.com/article/2022/4/artificial-intelligence-what-ai-product
+2026-01-15 17:36:59 [INFO] 开始读取网页: https://ai.google/products/
+2026-01-15 17:36:59 [INFO] 开始读取网页: https://www.aiproducts.com/index.html
+2026-01-15 17:37:03 [INFO] 网页读取完成: https://www.aiproducts.com/index.html
+2026-01-15 17:37:04 [INFO] 开始读取网页: https://claid.ai/
+2026-01-15 17:37:11 [INFO] 网页读取完成: https://claid.ai/
+2026-01-15 17:37:12 [INFO] 开始读取网页: https://productschool.com/blog/artificial-intelligence/ai-tools-for-product-managers
+2026-01-15 17:37:29 [ERROR] 读取网页失败: https://enterprisersproject.com/article/2022/4/artificial-intelligence-what-ai-product
+2026-01-15 17:37:29 [ERROR] 读取网页失败: https://ai.google/products/
+2026-01-15 17:37:30 [INFO] 开始读取网页: https://flair.ai/
+2026-01-15 17:37:30 [INFO] 网页读取完成: https://productschool.com/blog/artificial-intelligence/ai-tools-for-product-managers
+2026-01-15 17:37:30 [INFO] 开始读取网页: https://cloud.google.com/use-cases/free-ai-tools
+2026-01-15 17:37:31 [INFO] 开始读取网页: https://www.productplan.com/learn/ai-product-management/
+2026-01-15 17:37:39 [INFO] 网页读取完成: https://flair.ai/
+2026-01-15 17:37:41 [INFO] 开始读取网页: https://www.ibm.com/solutions/artificial-intelligence
+2026-01-15 17:37:42 [INFO] 网页读取完成: https://www.productplan.com/learn/ai-product-management/
+2026-01-15 17:37:42 [INFO] 开始读取网页: https://www.coursera.org/specializations/ai-product-management-duke
+2026-01-15 17:37:47 [INFO] 网页读取完成: https://www.coursera.org/specializations/ai-product-management-duke
+2026-01-15 17:37:52 [INFO] 网页读取完成: https://www.ibm.com/solutions/artificial-intelligence
+2026-01-15 17:38:00 [ERROR] 读取网页失败: https://cloud.google.com/use-cases/free-ai-tools
+2026-01-15 17:38:00 [INFO] 批量读取完成: 7 成功, 3 失败
+2026-01-15 17:38:00 [INFO] 内容抓取完成: 7 成功, 3 失败
+2026-01-15 17:38:00 [INFO] 开始处理 7 篇文章
+2026-01-15 17:38:00 [INFO] 开始批量处理 7 篇文章
+2026-01-15 17:38:00 [INFO] 开始生成 7 篇文章的摘要
+2026-01-15 17:38:00 [INFO] 发送消息给 Deepseek... (尝试 1/3)
+2026-01-15 17:38:15 [INFO] Deepseek 回复接收完成
+2026-01-15 17:38:15 [INFO] 摘要生成完成
+2026-01-15 17:38:15 [INFO] 开始提取关键要点
+2026-01-15 17:38:15 [INFO] 发送消息给 Deepseek... (尝试 1/3)
+2026-01-15 17:38:15 [INFO] 开始提取关键要点
+2026-01-15 17:38:15 [INFO] 发送消息给 Deepseek... (尝试 1/3)
+2026-01-15 17:38:15 [INFO] 开始提取关键要点
+2026-01-15 17:38:15 [INFO] 发送消息给 Deepseek... (尝试 1/3)
+2026-01-15 17:38:15 [INFO] 开始提取关键要点
+2026-01-15 17:38:15 [INFO] 发送消息给 Deepseek... (尝试 1/3)
+2026-01-15 17:38:15 [INFO] 开始提取关键要点
+2026-01-15 17:38:15 [INFO] 发送消息给 Deepseek... (尝试 1/3)
+2026-01-15 17:38:15 [INFO] 开始提取关键要点
+2026-01-15 17:38:15 [INFO] 发送消息给 Deepseek... (尝试 1/3)
+2026-01-15 17:38:15 [INFO] 开始提取关键要点
+2026-01-15 17:38:15 [INFO] 发送消息给 Deepseek... (尝试 1/3)
+2026-01-15 17:38:19 [INFO] Deepseek 回复接收完成
+2026-01-15 17:38:19 [INFO] 提取了 4 个关键要点
+2026-01-15 17:38:19 [INFO] Deepseek 回复接收完成
+2026-01-15 17:38:19 [INFO] 提取了 4 个关键要点
+2026-01-15 17:38:19 [INFO] Deepseek 回复接收完成
+2026-01-15 17:38:19 [INFO] 提取了 1 个关键要点
+2026-01-15 17:38:20 [INFO] Deepseek 回复接收完成
+2026-01-15 17:38:20 [INFO] 提取了 5 个关键要点
+2026-01-15 17:38:21 [INFO] Deepseek 回复接收完成
+2026-01-15 17:38:21 [INFO] 提取了 5 个关键要点
+2026-01-15 17:38:21 [INFO] Deepseek 回复接收完成
+2026-01-15 17:38:21 [INFO] 提取了 5 个关键要点
+2026-01-15 17:38:24 [INFO] Deepseek 回复接收完成
+2026-01-15 17:38:24 [INFO] 提取了 4 个关键要点
+2026-01-15 17:38:24 [INFO] 文章批量处理完成
+2026-01-15 17:38:24 [INFO] 内容处理完成
+2026-01-15 17:38:24 [INFO] 开始生成报告
+2026-01-15 17:38:24 [INFO] 文件已保存: data/reports/nightly-report-1768469904970.md
+2026-01-15 17:38:24 [INFO] 报告生成完成
+2026-01-15 17:38:24 [INFO] 夜间抓取流程完成，耗时 93.19 秒
+2026-01-15 17:38:24 [INFO] 开始发送通知
+2026-01-15 17:38:25 [ERROR] Slack Webhook 消息发送失败 Request failed with status code 404
+AxiosError: Request failed with status code 404
+    at settle (/Users/stephenl/Desktop/coding/Agent项目/AI相关资料整理--数字员工Jina AI/node_modules/axios/dist/node/axios.cjs:2097:12)
+    at IncomingMessage.handleStreamEnd (/Users/stephenl/Desktop/coding/Agent项目/AI相关资料整理--数字员工Jina AI/node_modules/axios/dist/node/axios.cjs:3305:11)
+    at IncomingMessage.emit (node:events:536:35)
+    at endReadableNT (node:internal/streams/readable:1698:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)
+    at Axios.request (/Users/stephenl/Desktop/coding/Agent项目/AI相关资料整理--数字员工Jina AI/node_modules/axios/dist/node/axios.cjs:4483:41)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Notifier.sendSlackWebhook (/Users/stephenl/Desktop/coding/Agent项目/AI相关资料整理--数字员工Jina AI/src/modules/notifier.js:163:7)
+    at async Notifier.sendSlack (/Users/stephenl/Desktop/coding/Agent项目/AI相关资料整理--数字员工Jina AI/src/modules/notifier.js:135:14)
+    at async Promise.allSettled (index 1)
+    at async Notifier.sendAllNotifications (/Users/stephenl/Desktop/coding/Agent项目/AI相关资料整理--数字员工Jina AI/src/modules/notifier.js:291:43)
+    at async manualRun (/Users/stephenl/Desktop/coding/Agent项目/AI相关资料整理--数字员工Jina AI/manual-run.js:38:28)
+2026-01-15 17:38:25 [INFO] 飞书 Webhook 消息发送成功
+2026-01-15 17:38:25 [INFO] 通知发送完成: 1 个渠道成功

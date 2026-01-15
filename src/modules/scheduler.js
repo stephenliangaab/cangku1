@@ -98,7 +98,7 @@ class Scheduler {
         
         logger.info(`夜间任务完成，耗时 ${duration.toFixed(2)} 秒`);
         logger.info(`处理结果: ${processResult.processedArticles} 篇文章`);
-        logger.info(`通知结果: 邮件 ${notificationResult.email ? '成功' : '失败'}, Slack ${notificationResult.slack ? '成功' : '失败'}`);
+        logger.info(`通知结果: 飞书 ${notificationResult.feishu ? '成功' : '失败'}`);
         
       } else {
         logger.error('夜间流程执行失败', processResult.error);
@@ -207,9 +207,8 @@ class Scheduler {
         this.notifier.healthCheck()
       ]);
       
-      // 修正健康检查逻辑：至少一个通知渠道可用即可
-      const isHealthy = processorHealth.healthy && 
-                       (notifierHealth.feishu || notifierHealth.slack);
+      // 健康检查逻辑：处理器和飞书通知都正常
+      const isHealthy = processorHealth.healthy && notifierHealth.feishu;
       
       const healthStatus = {
         healthy: isHealthy,
