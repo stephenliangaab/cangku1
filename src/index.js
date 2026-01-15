@@ -194,8 +194,16 @@ if (require.main === module) {
       console.log('健康状态:', JSON.stringify(health, null, 2));
       process.exit(health.healthy ? 0 : 1);
       
+    } else if (process.env.GITHUB_ACTIONS === 'true') {
+      // GitHub Actions 环境 - 执行一次性任务
+      logger.info('🔍 检测到 GitHub Actions 环境，执行一次性抓取任务');
+      await app.init();
+      const result = await app.triggerManualExecution();
+      console.log('GitHub Actions 执行结果:', result);
+      process.exit(result.success ? 0 : 1);
+      
     } else {
-      // 正常运行模式
+      // 正常运行模式（本地开发环境）
       await app.run();
     }
   };

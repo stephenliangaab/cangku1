@@ -137,14 +137,23 @@ class Scheduler {
       };
     }
     
-    logger.info('手动触发任务执行');
-    await this.executeNightlyTask();
-    
-    return {
-      success: true,
-      message: '手动任务执行完成',
-      timestamp: new Date().toISOString()
-    };
+    try {
+      logger.info('手动触发任务执行');
+      await this.executeNightlyTask();
+      
+      return {
+        success: true,
+        message: '手动任务执行完成',
+        timestamp: new Date().toISOString()
+      };
+    } catch (error) {
+      logger.error('手动任务执行失败', error);
+      return {
+        success: false,
+        error: error.message || '手动任务执行失败',
+        timestamp: new Date().toISOString()
+      };
+    }
   }
 
   /**

@@ -139,10 +139,13 @@ class ConfigManager {
    * 获取系统配置
    */
   getSystemConfig() {
+    // GitHub Actions 环境下使用更短的超时时间和更少的结果数量
+    const isGitHubActions = process.env.GITHUB_ACTIONS === 'true';
+    
     return {
-      maxResults: parseInt(this.get('MAX_RESULTS', '10')),
-      maxConcurrent: parseInt(this.get('MAX_CONCURRENT', '3')),
-      requestTimeout: parseInt(this.get('REQUEST_TIMEOUT', '30000')),
+      maxResults: parseInt(this.get('MAX_RESULTS', isGitHubActions ? '5' : '10')),
+      maxConcurrent: parseInt(this.get('MAX_CONCURRENT', isGitHubActions ? '2' : '3')),
+      requestTimeout: parseInt(this.get('REQUEST_TIMEOUT', isGitHubActions ? '15000' : '30000')),
       cronSchedule: this.get('CRON_SCHEDULE', '0 7 * * *')
     };
   }
